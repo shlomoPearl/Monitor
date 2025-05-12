@@ -22,63 +22,15 @@ class Monitor:
         self.key = None
         # self.fernet = None
 
-    def decrypt(self, file_name):
-        # using the key
-
-        fernet = Fernet(self.key)
-
-        # opening the encrypted file
-        with open(file_name, 'rb') as enc_file:
-            encrypted = enc_file.read()
-
-        # decrypting the file
-        decrypted = fernet.decrypt(encrypted)
-
-        # opening the file in write mode and
-        # writing the decrypted data
-        with open(file_name, 'wb') as dec_file:
-            dec_file.write(decrypted)
-
-    def encrypt(self, file_name):
-        # key generation
-        self.key = Fernet.generate_key()
-
-        # string the key in a file
-        with open('filekey.key', 'wb') as filekey:
-            filekey.write(self.key)
-
-        # opening the key
-        with open('filekey.key', 'rb') as filekey:
-            self.key = filekey.read()
-
-        # using the generated key
-        fernet = Fernet(self.key)
-
-        # opening the original file to encrypt
-        with open(file_name, 'rb') as file:
-            original = file.read()
-
-        # encrypting the file
-        encrypted = fernet.encrypt(original)
-
-        # opening the file in write mode and
-        # writing the encrypted data
-        with open(file_name, 'wb') as encrypted_file:
-            encrypted_file.write(encrypted)
-
     # use in terminal to get services
     def write_linux_services(self, date_time):
-        os.popen(f'echo {date_time} >> {name_service_list} | service --status-all | grep + >> {name_service_list}')
-        self.encrypt(name_service_list)
+        os.popen(f'echo {date_time} >> {name_service_list} '
+                 f'| service --status-all | grep + >> {name_service_list}')
 
     # use in terminal to get services
     def write_windows_services(self, date_time):
         os.popen(f'echo {date_time} >> {name_service_list}')
         os.popen(f'net start >> {name_service_list}')
-        if self.key is not None:
-            self.decrypt(name_service_list)
-        time.sleep(1)
-        self.encrypt(name_service_list)
 
     # use to insert the services into file on each time the use want
     def update_services_list(self):
@@ -102,7 +54,6 @@ class Monitor:
                 f.writelines(old)
             f.write('\n')
         f.close()
-        self.encrypt(name_service_change)
 
     """
     this func get two lists of services and check the difference
