@@ -85,8 +85,6 @@ class Monitor:
     def get_last_log(self):
         list_log = []
         # ISO-8859-8 is for supported in hebrew
-        self.decrypt(name_service_list)  # decrypt file and then read info
-        time.sleep(1)
         with open(name_service_list, 'r', encoding='ISO-8859-8') as f:
             while True:
                 try:
@@ -99,7 +97,6 @@ class Monitor:
                 except UnicodeDecodeError:
                     print("reading of one line get wrong")
         f.close()
-        self.encrypt(name_service_list)
         real_index = 0
         for index, line in enumerate(list_log):
             if len(line.split('~')) > 1:
@@ -137,11 +134,9 @@ class Monitor:
         date_diff = math.inf
         time_diff = math.inf
         index = 0
-        self.decrypt(name_service_list)
         # time.sleep(1)
         with open(name_service_list, 'r', encoding='ISO-8859-8') as f:
             log_list = f.readlines()
-            self.encrypt(name_service_list)
             for i, line in enumerate(log_list):
                 if len(line.split('~')) > 1:
                     date = self.date_fiff(line.split('~')[1].strip().split(' ')[0], event[0])
